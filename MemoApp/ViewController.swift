@@ -8,6 +8,7 @@
 
 import UIKit
 
+//メモアプリ開発日2/11~12
 class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,saveMemoProtocol {
 
     //メモ構造体(タイトルと中身)
