@@ -8,7 +8,7 @@
 
 import UIKit
 
-//メモアプリ開発日2/11~12
+//メモアプリ開発日 2/11~12
 class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,saveMemoProtocol {
 
     //メモ構造体(タイトルと中身)
@@ -26,12 +26,45 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
     @IBOutlet weak var memoCountLabel: UILabel!
     @IBOutlet weak var tableview: UITableView!
     
+    //プラスボタン宣言
+    var addBarButtonItem: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
         tableview.delegate = self
         tableview.dataSource = self
+        
+        addBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBarButtonTapped(_:)))
+        
+        self.navigationItem.rightBarButtonItems = [addBarButtonItem]
+        
+        
+        
     }
+    
+    
+    //メモ追加ボタン
+    @objc func addBarButtonTapped(_ sender: UIBarButtonItem) {
+        print("【+】ボタンが押された!")
+        
+        //メモがこ５個以上の時は何もしない
+            if memoArray.count > 10{
+                print("これ以上メモは作れません")
+            }
+            else{
+            
+        
+            //タップした時にその配列の中身を表示させる
+            let addmemoVC = storyboard?.instantiateViewController(withIdentifier: "add")  as! addMemoViewController
+                
+                addmemoVC.delegate = self
+            
+            //画面遷移
+            navigationController?.pushViewController(addmemoVC, animated: true)
+            }
+    }
+
     
     //中身がないメモを消す
     func removeEmptyMemo(){
@@ -140,24 +173,25 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
         tableview.reloadData()
     }
 
-    //新規メモ作成
-    @IBAction func plusAction(_ sender: Any) {
-        //メモがこ５個以上の時は何もしない
-            if memoArray.count > 10{
-                print("これ以上メモは作れません")
-            }
-            else{
-            
-        
-            //タップした時にその配列の中身を表示させる
-            let addmemoVC = storyboard?.instantiateViewController(withIdentifier: "add")  as! addMemoViewController
-                
-                addmemoVC.delegate = self
-            
-            //画面遷移
-            navigationController?.pushViewController(addmemoVC, animated: true)
-            }
-        }
+    
+//    //新規メモ作成
+//    @IBAction func plusAction(_ sender: Any) {
+//        //メモがこ５個以上の時は何もしない
+//            if memoArray.count > 10{
+//                print("これ以上メモは作れません")
+//            }
+//            else{
+//
+//
+//            //タップした時にその配列の中身を表示させる
+//            let addmemoVC = storyboard?.instantiateViewController(withIdentifier: "add")  as! addMemoViewController
+//
+//                addmemoVC.delegate = self
+//
+//            //画面遷移
+//            navigationController?.pushViewController(addmemoVC, animated: true)
+//            }
+//        }
     
 }
 
