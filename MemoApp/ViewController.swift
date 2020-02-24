@@ -19,9 +19,9 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
     
     //ナビゲーションアイテムのプラスボタン宣言
     var addBarButtonItem: UIBarButtonItem!
-    
     var memoCount = 0
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -68,9 +68,17 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
                 addmemoVC.memoArray = array
                 //addmemoVC.memoNumber = array.count
             
-            //画面遷移
-            navigationController?.pushViewController(addmemoVC, animated: true)
+                //画面遷移
+                navigationController?.pushViewController(addmemoVC, animated: true)
+                    
+              
+                
+                               
             }
+        
+      
+                     
+            
     }
 
     
@@ -151,11 +159,16 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
     //セルが選択された時
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+   
+        //画面遷移する
+//        performSegue(withIdentifier: "selectMemo", sender: nil)
+        
+        
         //タップした時にメモの中身を渡す
         let memoVC = storyboard?.instantiateViewController(withIdentifier: "memo")  as! memoViewController
-        
+
         memoVC.delegate = self
-        
+
         //中身とセルの順番を渡す
         print("\(String(indexPath.row)) is selected")
         let array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
@@ -164,9 +177,10 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
         memoVC.memoArray = array
         //memoVC.memoString = memoArray[indexPath.row].content
         memoVC.memoNumber = indexPath.row
-        
+
         //画面遷移
         navigationController?.pushViewController(memoVC, animated: true)
+        
     }
     
     
@@ -184,7 +198,34 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
 
     }
     
+   
+              
+       
+//      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//
+//
+//        if segue.identifier == "selectMemo"{
+//            let memoVC = segue.destination as! memoViewController
+//
+//            memoVC.delegate = self
+//
+//            //中身とセルの順番を渡す
+//            print("\(String(memoNum)) is selected")
+//            let array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
+//            print(array)
+//            //memoVC.memoContent = array[indexPath.row]
+//            memoVC.memoArray = array
+//            //memoVC.memoString = memoArray[indexPath.row].content
+//            memoVC.memoNumber = memoNum
+//
+//        }
+//
+//
+//      }
+//
         
+    
+    
 //    //メモのタイトルを記憶するdelegateメソッド
 //    //addmemoから戻る時に呼ばれる
 //    func addMemo(content: String){
@@ -230,24 +271,7 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
 
 
     
-//    //新規メモ作成
-//    @IBAction func plusAction(_ sender: Any) {
-//        //メモがこ５個以上の時は何もしない
-//            if memoArray.count > 10{
-//                print("これ以上メモは作れません")
-//            }
-//            else{
-//
-//
-//            //タップした時にその配列の中身を表示させる
-//            let addmemoVC = storyboard?.instantiateViewController(withIdentifier: "add")  as! addMemoViewController
-//
-//                addmemoVC.delegate = self
-//
-//            //画面遷移
-//            navigationController?.pushViewController(addmemoVC, animated: true)
-//            }
-//        }
+
     
 }
 

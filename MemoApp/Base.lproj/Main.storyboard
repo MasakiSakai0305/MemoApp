@@ -48,7 +48,7 @@
                         <outlet property="memoCountLabel" destination="IEo-cY-Ad1" id="eVc-eL-DLz"/>
                         <outlet property="tableview" destination="wDf-Hm-8fe" id="aRp-P2-apU"/>
                         <segue destination="aWe-UP-Dcb" kind="show" id="OVA-oh-KcU"/>
-                        <segue destination="8oa-DL-LHI" kind="show" id="Rof-bO-4rN"/>
+                        <segue destination="8oa-DL-LHI" kind="show" identifier="selectMemo" id="Rof-bO-4rN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -34,6 +34,9 @@ class addMemoViewController: UIViewController, UINavigationControllerDelegate {
         
             }
     
+  
+
+    
     //前の画面に戻るとき,textviewの中身をメモに格納
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         
