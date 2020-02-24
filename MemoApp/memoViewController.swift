@@ -12,7 +12,6 @@ class memoViewController: UIViewController,UINavigationControllerDelegate{
 
     
     var memoContent = ""
-    var cellCount = Int()
     var memoNumber = Int()
     
     var memoArray = [String]()
@@ -31,7 +30,7 @@ class memoViewController: UIViewController,UINavigationControllerDelegate{
         navigationController?.delegate = self
         
         //memoView.text = memoContent
-        memoView.text = memoArray[cellCount]
+        memoView.text = memoArray[memoNumber]
         
         trashBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(trashBarButtonTapped(_:)))
         
@@ -55,9 +54,9 @@ class memoViewController: UIViewController,UINavigationControllerDelegate{
             //メモのタイトル・内容
             
             print("content: ", memoView.text)
-            print("number: ", cellCount, "\n")
+            print("number: ", memoNumber, "\n")
             
-            memoArray[cellCount] = memoContent
+            memoArray[memoNumber] = memoView.text
             print(memoArray)
             
             if memoContent == ""{

@@ -163,7 +163,7 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
         //memoVC.memoContent = array[indexPath.row]
         memoVC.memoArray = array
         //memoVC.memoString = memoArray[indexPath.row].content
-        memoVC.cellCount = indexPath.row
+        memoVC.memoNumber = indexPath.row
         
         //画面遷移
         navigationController?.pushViewController(memoVC, animated: true)
