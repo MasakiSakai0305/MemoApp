@@ -2,32 +2,25 @@
 //  ViewController.swift
 //  PracticememoApp
 //
-//  Created by 境将輝 on 2020/02/10.
+//  Created by MasakiSakai on 2020/02/10.
 //  Copyright © 2020 Masaki Sakai. All rights reserved.
 //
 
 import UIKit
 
-//メモアプリ開発日 2/11~12
-class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,saveMemoProtocol {
 
-    //メモ構造体(タイトルと中身)
-    struct memo{
-        var title: String
-        var content: String
-        
-           init(title: String, content: String) {
-               self.title = title
-               self.content = content
-           }
-    }
-    var memoArray = [memo]()
+class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,saveMemoProtocol {
+    
+    
+    var memoArray = [String]()
 
     @IBOutlet weak var memoCountLabel: UILabel!
     @IBOutlet weak var tableview: UITableView!
     
-    //プラスボタン宣言
+    //ナビゲーションアイテムのプラスボタン宣言
     var addBarButtonItem: UIBarButtonItem!
+    
+    var memoCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,9 +32,17 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
         
         self.navigationItem.rightBarButtonItems = [addBarButtonItem]
         
+        //var memoArray = UserDefaults.standard.set(memoArray, forKey: "memoArray")
+        
+        
+        
         
         
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        tableview.reloadData()
+//    }
     
     
     //メモ追加ボタン
@@ -54,11 +55,18 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
             }
             else{
             
-        
+                
+            let array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
             //タップした時にその配列の中身を表示させる
             let addmemoVC = storyboard?.instantiateViewController(withIdentifier: "add")  as! addMemoViewController
                 
                 addmemoVC.delegate = self
+            
+                //メモの番号
+                memoCount = array.count
+                
+                addmemoVC.memoArray = array
+                //addmemoVC.memoNumber = array.count
             
             //画面遷移
             navigationController?.pushViewController(addmemoVC, animated: true)
@@ -67,29 +75,49 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
 
     
     //中身がないメモを消す
-    func removeEmptyMemo(){
+    func removeEmptyMemo() -> [String] {
+        
+        print("--removeEmptyMemo--")
+        var array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
         var emptyMemoNumber = [Int]()
-        for i in 0 ..< memoArray.count{
-            if memoArray[i].title == "" {
+        
+        for i in 0 ..< array.count{
+            
+            let memo = array[i]
+            print(i, memo)
+            if memo == "" {
                 print("中身がないメモ発見", i)
-                print(memoArray[i])
                 emptyMemoNumber.append(i)
             }
         }
+
         for i in emptyMemoNumber{
-            memoArray.remove(at: i)
+            print(array[i])
+            print(i)
+            array.remove(at: i)
             }
-    
+//
+        UserDefaults.standard.set(array, forKey: "memoArray")
         print("--removeEmptyMemo終了--")
-        print(memoArray, "\n")
+    //    print(memoArray, "\n")
+        return array
     }
     
     
     //セルの数を決めるメソッド
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            removeEmptyMemo()
-            let Count = memoArray.count
-            print("メモの数: ", Count)
+            print("--tableView numberOfRowsInSection--")
+            var Count = 0
+            if let array = UserDefaults.standard.array(forKey: "memoArray"){
+                Count = removeEmptyMemo().count
+                print("\nメモの数: ", Count)
+                print(array, "\n")
+                
+            }
+            //UserDefaultsに何も入っていない時
+            else {
+                Count = 0
+            }
             
             //ラベルに現在のメモの数を表示
             memoCountLabel.text = "現在: " + String(Count)
@@ -109,15 +137,15 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
         //セルのハイライトについて
         //cell.selectionStyle = .none
         
-        cell.textLabel?.text = memoArray[indexPath.row].title
-        
+        let array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
+        let title = array[indexPath.row].prefix(10)
+        cell.textLabel?.text = String(title)
+
         print("---cell:\(String(indexPath.row))---")
-        print("title: ", memoArray[indexPath.row].title)
-        print("content: ", memoArray[indexPath.row].content)
+        print(array)
         
         return cell
     }
-    
     
     
     //セルが選択された時
@@ -129,7 +157,12 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
         memoVC.delegate = self
         
         //中身とセルの順番を渡す
-        memoVC.memoString = memoArray[indexPath.row].content
+        print("\(String(indexPath.row)) is selected")
+        let array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
+        print(array)
+        //memoVC.memoContent = array[indexPath.row]
+        memoVC.memoArray = array
+        //memoVC.memoString = memoArray[indexPath.row].content
         memoVC.cellCount = indexPath.row
         
         //画面遷移
@@ -142,36 +175,59 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
         return view.frame.size.height/10
     }
 
-        
-    //メモのタイトルを記憶するdelegateメソッド
-    //addmemoから戻る時に呼ばれる
-    func addMemo(title: String, content: String){
-        
-        print("---addMemo---")
-        print(title, content)
-        
-        memoArray.append(memo(title: title, content: content))
-        
-        print("--メモが追加されているかチェック--")
-        for i in 0 ..< memoArray.count{
-            print(memoArray[i])
-        }
-        print("\n")
+    
+    //テーブルを更新するdelegateメソッド
+    //viewwillapperでreloadしてもうまくいかないためここで更新する
+    func updateMemo(callingFunctionName: String){
+        print("called by \(callingFunctionName)\n")
         tableview.reloadData()
+
     }
     
-    //メモのタイトルを記憶するdelegateメソッド
-    //memoから戻る時に呼ばれる
-    func changeMemo(title: String, content: String, count:Int){
         
-        print("---changeMemo---")
-        print("title: ", title)
-        print("content: ", content)
-        print("count: ", count)
-        
-        memoArray[count] = memo(title: title, content: content)
-        tableview.reloadData()
-    }
+//    //メモのタイトルを記憶するdelegateメソッド
+//    //addmemoから戻る時に呼ばれる
+//    func addMemo(content: String){
+//
+//        print("---addMemo---")
+////        memoArray.append(content)
+////        print(memoArray)
+////        var array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
+////        array.append(content)
+////        UserDefaults.standard.set(array, forKey: "memoArray")
+////
+//////        print("--メモが追加されているかチェック--")
+//////        for i in 0 ..< memoArray.count{
+//////            print(memoArray[i])
+//////        }
+//////        print("\n")
+//        tableview.reloadData()
+//        print("--addmemo終了--")
+//
+//    }
+//
+//    //メモのタイトルを記憶するdelegateメソッド
+//    //memoから戻る時に呼ばれる
+//    func changeMemo(content: String, count:Int){
+//
+//        print("---changeMemo---")
+////        var array = UserDefaults.standard.object(forKey: "memoArray") as! [String]
+////        array[count] = content
+////        UserDefaults.standard.set(array, forKey: "memoArray")
+//
+////        print("title: ", title)
+////        print("content: ", content)
+////        print("count: ", count)
+////
+////        memoArray[count] = memo(title: title, content: content)
+//
+//
+//        tableview.reloadData()
+//        print("---changeMemo終了---")
+//
+//    }
+//
+
 
     
 //    //新規メモ作成

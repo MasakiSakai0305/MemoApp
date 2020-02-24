@@ -10,16 +10,17 @@ import UIKit
 
 protocol saveMemoProtocol {
     
-    func addMemo(title: String, content: String)
-    func changeMemo(title: String, content: String, count:Int)
+    func updateMemo(callingFunctionName: String)
     
 }
 class addMemoViewController: UIViewController, UINavigationControllerDelegate {
 
     
     var memoContent = ""
-    var memoTitle = ""
+    //var memoTitle = ""
     var delegate:saveMemoProtocol?
+    var memoNumber = Int()
+    var memoArray = [String]()
     
     @IBOutlet weak var textView: UITextView!
     
@@ -28,6 +29,9 @@ class addMemoViewController: UIViewController, UINavigationControllerDelegate {
         
         navigationController?.delegate = self
         
+        print("\n--addmemoVC--")
+        print(memoArray, "\n")
+        
             }
     
     //前の画面に戻るとき,textviewの中身をメモに格納
@@ -35,15 +39,19 @@ class addMemoViewController: UIViewController, UINavigationControllerDelegate {
         
         //前の画面に戻るとき
         if viewController is ViewController {
-            print("--追加したメモ--")
+            print("--No.\(memoNumber) 追加したメモ--")
             //メモのタイトル・内容
             memoContent = textView.text
-            memoTitle = String(textView.text.prefix(10))
+            //memoTitle = String(textView.text.prefix(10))
             print("content:", memoContent)
-            print("title:", memoTitle, "\n")
+            //print("title:", memoTitle, "\n")
+            
+            memoArray.append(memoContent)
+            print(memoArray)
+            UserDefaults.standard.set(memoArray, forKey: "memoArray")
             
             //このタイミングでdelegateメソッドを使う
-            delegate?.addMemo(title: memoTitle, content: memoContent)
+            delegate?.updateMemo(callingFunctionName: "addMemoVC")
             
             
         }

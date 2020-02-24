@@ -10,24 +10,17 @@ import UIKit
 
 class memoViewController: UIViewController,UINavigationControllerDelegate{
 
-
-//    struct memo{
-//        var title: String
-//        var content: String
-//
-//           init(title: String, content: String) {
-//               self.title = title
-//               self.content = content
-//           }
-//    }
-    //var memoStruct = memo(title:"", content:"")
     
-    var memoString = ""
-    var memoTitle = ""
     var memoContent = ""
     var cellCount = Int()
+    var memoNumber = Int()
+    
+    var memoArray = [String]()
     
     var delegate:saveMemoProtocol?
+    
+    //メモ削除ボタン
+    var trashBarButtonItem: UIBarButtonItem!
     
     
     @IBOutlet weak var memoView: UITextView!
@@ -37,10 +30,21 @@ class memoViewController: UIViewController,UINavigationControllerDelegate{
         
         navigationController?.delegate = self
         
-        memoView.text = memoString
+        //memoView.text = memoContent
+        memoView.text = memoArray[cellCount]
         
-    
+        trashBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(trashBarButtonTapped(_:)))
+        
+        self.navigationItem.rightBarButtonItems = [trashBarButtonItem]
     }
+    
+    //メモ削除ボタン
+    @objc func trashBarButtonTapped(_ sender: UIBarButtonItem) {
+        print("trashボタンが押された!")
+        
+        
+            }
+
     
     //前の画面に戻るとき,textviewの中身をメモに格納
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
@@ -49,18 +53,23 @@ class memoViewController: UIViewController,UINavigationControllerDelegate{
         if viewController is ViewController {
             print("--変更したメモ--")
             //メモのタイトル・内容
-            memoContent = memoView.text
-            memoTitle = String(memoView.text.prefix(10))
             
-            print("content: ", memoContent)
+            print("content: ", memoView.text)
             print("number: ", cellCount, "\n")
+            
+            memoArray[cellCount] = memoContent
+            print(memoArray)
             
             if memoContent == ""{
                 print("入ってない")
             }
             
+            UserDefaults.standard.set(memoArray, forKey: "memoArray")
+            
             //このタイミングでdelegateメソッドを使う
-            delegate?.changeMemo(title: memoTitle, content: memoContent, count:cellCount)
+            delegate?.updateMemo(callingFunctionName: "memoVC")
+
+            
         }
     }
 
